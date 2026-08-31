@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ミニマム実装課題 プロンプト作成</title>
+    <meta name="description" content="Qiitaにて公開したミニマム実装課題Gemのカスタム指示を作成するwebアプリです">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ヘッダーエリア -->
+    <header class="header">
+        <h1>ミニマム実装課題Gemのプロンプト作成</h1>
+        <p>Qiitaにて公開したミニマム実装課題Gemのカスタム指示を作成するwebアプリです</p>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="container">
+        
+        <!-- 入力フォームセクション -->
+        <section class="form-section">
+            <div class="form-instruction">
+                <p>以下の項目を埋めて「作成」を押すことで、カスタム指示を作成できます。</p>
+                <p class="note">※ (※) がついている項目は入力必須です。</p>
+            </div>
+
+            <form id="promptForm">
+                <div class="form-group">
+                    <label for="language">使用言語 (※)</label>
+                    <input type="text" id="language" name="language" required placeholder="C++">
+                </div>
+
+                <div class="form-group">
+                    <label for="Field_Study">学習分野</label>
+                    <input type="text" id="Field_Study" name="Field_Study" placeholder="クラス（オブジェクト指向）">
+                </div>
+
+                <div class="form-group">
+                    <label for="time">解答時間の目安 (※)</label>
+                    <input type="number" id="time" name="time" min="15" max="60" placeholder="min:15 ~ max:60" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="scale">想定の行数 (※)</label>
+                    <input type="number" id="scale" name="scale" min="60" max="120" placeholder="min:60 ~ max:240" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="submitBtn">作成</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- 出力セクション -->
+        <section class="output-section">
+            <div class="output-instruction">
+                <p>以下のテキストボックスにカスタム指示が作成されます。</p>
+                <p>コピペして使用してください。</p>
+            </div>
+            
+            <div class="output-group">
+                <textarea id="output" rows="15" cols="80" readonly placeholder="ここにカスタム指示が生成されます..."></textarea>
+                <button type="button" id="copyBtn">カスタム指示をコピー</button>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
