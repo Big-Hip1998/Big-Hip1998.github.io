@@ -1,33 +1,39 @@
-// エスケープ処理関数
-function escapeHTML(str) {
-    return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-}
-
 document.getElementById('promptForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    // 入力値の取得とエスケープ処理
-    const language = escapeHTML(document.getElementById('language').value);
-    const fieldStudyInput = document.getElementById('Field_Study').value;
-    const time = escapeHTML(document.getElementById('time').value);
-    const scale = escapeHTML(document.getElementById('scale').value);
+    // 入力値の取得とサニタイズ（改行除去・前後空白トリム）
+    const languageRaw = document.getElementById('language').value.replace(/[\r\n]/g, '').trim();
+    const fieldStudyRaw = document.getElementById('Field_Study').value.replace(/[\r\n]/g, '').trim();
+    const timeVal = parseInt(document.getElementById('time').value, 10);
+    const scaleVal = parseInt(document.getElementById('scale').value, 10);
+
+    // 数値入力値の強固なバリデーション（改ざん・範囲外入力の防止）
+    if (isNaN(timeVal) || timeVal < 15 || timeVal > 60) {
+        alert('解答時間の目安は 15 から 60 の間の数値で指定してください。');
+        return;
+    }
+
+    if (isNaN(scaleVal) || scaleVal < 60 || scaleVal > 240) {
+        alert('想定の行数は 60 から 240 の間の数値で指定してください。');
+        return;
+    }
+
+    if (!languageRaw) {
+        alert('使用言語を入力してください。');
+        return;
+    }
 
     // 学習分野（任意入力）の条件分岐
-    const fieldStudyLine = fieldStudyInput.trim() !== ''
-        ? `・学習分野: ${escapeHTML(fieldStudyInput)}\n`
+    const fieldStudyLine = fieldStudyRaw !== ''
+        ? `・学習分野: "${fieldStudyRaw}"\n`
         : '';
 
     // カスタム指示（プロンプト）文章の生成
     const promptText = `[課題を作成して] というキーワードが来たときのみ
 以下の条件を満たした、ミニマム実装の課題を作成してください。
-・言語: ${language}
-${fieldStudyLine}・難易度: ${time}分程度で解けるレベル
-・コード規模: ${scale}行程度で納まるミニマム実装
+・言語: "${languageRaw}"
+${fieldStudyLine}・難易度: ${timeVal}分程度で解けるレベル
+・コード規模: ${scaleVal}行程度で納まるミニマム実装
 ・課題には問題概要・仕様を付けてください
 ・問題概要・仕様はコメントブロックで囲うようにしてください
 ・課題はテキストボックスで囲んで出力するようにしてください
@@ -43,7 +49,7 @@ ${fieldStudyLine}・難易度: ${time}分程度で解けるレベル
 また、採点結果が70点以上であればわからされてください
 70点未満の場合は罵倒するようにしてください`;
 
-    // 結果を出力エリア（例: <textarea id="output"></textarea>）にセット
+    // 結果を出力エリアにセット (textarea.value はテキストとして扱われるため自動的に安全)
     document.getElementById('output').value = promptText;
 });
 
